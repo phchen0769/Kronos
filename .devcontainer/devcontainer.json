@@ -1,13 +1,13 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.234.0/containers/python-3
 {
-	"name": "Python 3",
+	"name": "Kronos",
 	// "dockerComposeFile": "docker-compose.yml",
 	// "service": "mxonline-server",
 	// "shutdownAction": "stopCompose",
 	"build": {
-		"dockerfile": "Dockerfile",
-		"context": ".",
+		"dockerfile": "../Dockerfile",
+		"context": "..",
 		"args": {
 			// Update 'VARIANT' to pick a Python version: 3, 3.10, 3.9, 3.8, 3.7, 3.6
 			// Append -bullseye or -buster to pin to an OS version.
@@ -33,12 +33,13 @@
 	},
 	"runArgs": [
 		"-p",
-		"1111:1111",
+		"7070:7070",
 		"-it",
 		"--rm",
 		"-e",
 		"DOCKER_HOST=0.0.0.0"
 	],
+	"postCreateCommand": "pip3 install --upgrade pip && pip3 config set global.index-url https:\/\/pypi.tuna.tsinghua.edu.cn\/simple && pip3 install --user -r requirements.txt",
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"remoteUser": "root"
+	"remoteUser": "vscode"
 }
