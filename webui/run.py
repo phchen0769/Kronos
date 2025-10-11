@@ -71,19 +71,19 @@ def main():
     try:
         from app import app
         print("✅ Web server started successfully!")
-        print(f"🌐 Access URL: http://localhost:7070")
+        print(f"🌐 Access URL: http://localhost:8080")
         print("💡 Tip: Press Ctrl+C to stop server")
         
         # Auto-open browser
         time.sleep(2)
-        webbrowser.open('http://localhost:7070')
+        webbrowser.open('http://localhost:8080')
         
         # Start Flask application
-        app.run(debug=True, host='0.0.0.0', port=7070)
+        app.run(debug=True, host='0.0.0.0', port=8080)
         
     except Exception as e:
         print(f"❌ Startup failed: {e}")
-        print("Please check if port 7070 is occupied")
+        print("Please check if port 8080 is occupied")
 
 if __name__ == "__main__":
     main()

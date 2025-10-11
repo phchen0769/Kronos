@@ -60,6 +60,7 @@ AVAILABLE_MODELS = {
 def load_data_files():
     """Scan data directory and return available data files"""
     data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data')
+    print(f"Data directory is: {data_dir}")
     data_files = []
     
     if os.path.exists(data_dir):
@@ -395,11 +396,11 @@ def load_data():
         return jsonify({
             'success': True,
             'data_info': data_info,
-            'message': f'Successfully loaded data, total {len(df)} rows'
+            'message': f'成功加载数据 {len(df)} 行'
         })
         
     except Exception as e:
-        return jsonify({'error': f'Failed to load data: {str(e)}'}), 500
+        return jsonify({'error': f'数据加载失败: {str(e)}'}), 500
 
 @app.route('/api/predict', methods=['POST'])
 def predict():
@@ -416,7 +417,7 @@ def predict():
         sample_count = int(data.get('sample_count', 1))
         
         if not file_path:
-            return jsonify({'error': 'File path cannot be empty'}), 400
+            return jsonify({'error': '文件路径不能为空'}), 400
         
         # Load data
         df, error = load_data_file(file_path)
@@ -424,7 +425,7 @@ def predict():
             return jsonify({'error': error}), 400
         
         if len(df) < lookback:
-            return jsonify({'error': f'Insufficient data length, need at least {lookback} rows'}), 400
+            return jsonify({'error': f'数据长度不足，需要至少 {lookback} 行'}), 400
         
         # Perform prediction
         if MODEL_AVAILABLE and predictor is not None:
@@ -448,7 +449,7 @@ def predict():
                     
                     # Ensure sufficient data: lookback + pred_len
                     if len(time_range_df) < lookback + pred_len:
-                        return jsonify({'error': f'Insufficient data from start time {start_dt.strftime("%Y-%m-%d %H:%M")}, need at least {lookback + pred_len} data points, currently only {len(time_range_df)} available'}), 400
+                        return jsonify({'error': f'从起始时间开始数据不足 {start_dt.strftime("%Y-%m-%d %H:%M")}, 需要至少 {lookback + pred_len} 数据点, 当前只有 {len(time_range_df)} 可用'}), 400
                     
                     # Use first lookback data points within selected window for prediction
                     x_df = time_range_df.iloc[:lookback][required_cols]
@@ -462,7 +463,7 @@ def predict():
                     end_timestamp = time_range_df['timestamps'].iloc[lookback+pred_len-1]
                     time_span = end_timestamp - start_timestamp
                     
-                    prediction_type = f"Kronos model prediction (within selected window: first {lookback} data points for prediction, last {pred_len} data points for comparison, time span: {time_span})"
+                    prediction_type = f"Kronos模型预测（在选定的时间窗口内：前{lookback}个数据点用于预测，后{pred_len}个数据点用于对比验证，时间跨度：{time_span}）"
                 else:
                     # Use latest data
                     x_df = df.iloc[:lookback][required_cols]
@@ -487,9 +488,9 @@ def predict():
                 )
                 
             except Exception as e:
-                return jsonify({'error': f'Kronos model prediction failed: {str(e)}'}), 500
+                return jsonify({'error': f'Kronos模型预测失败: {str(e)}'}), 500
         else:
-            return jsonify({'error': 'Kronos model not loaded, please load model first'}), 400
+            return jsonify({'error': 'Kronos模型没有加载, 请先加载模型'}), 400
         
         # Prepare actual data for comparison (if exists)
         actual_data = []
@@ -608,7 +609,7 @@ def predict():
                 }
             )
         except Exception as e:
-            print(f"Failed to save prediction results: {e}")
+            print(f"保存预测结果失败: {e}")
         
         return jsonify({
             'success': True,
@@ -617,11 +618,11 @@ def predict():
             'prediction_results': prediction_results,
             'actual_data': actual_data,
             'has_comparison': len(actual_data) > 0,
-            'message': f'Prediction completed, generated {pred_len} prediction points' + (f', including {len(actual_data)} actual data points for comparison' if len(actual_data) > 0 else '')
+            'message': f'预测完成，生成了 {pred_len} 个预测点' + (f', 包含 {len(actual_data)} 个实际数据点用于对比验证' if len(actual_data) > 0 else '')
         })
         
     except Exception as e:
-        return jsonify({'error': f'Prediction failed: {str(e)}'}), 500
+        return jsonify({'error': f'预测失败: {str(e)}'}), 500
 
 @app.route('/api/load-model', methods=['POST'])
 def load_model():
@@ -630,14 +631,14 @@ def load_model():
     
     try:
         if not MODEL_AVAILABLE:
-            return jsonify({'error': 'Kronos model library not available'}), 400
+            return jsonify({'error': 'Kronos模型库不可用'}), 400
         
         data = request.get_json()
         model_key = data.get('model_key', 'kronos-small')
         device = data.get('device', 'cpu')
         
         if model_key not in AVAILABLE_MODELS:
-            return jsonify({'error': f'Unsupported model: {model_key}'}), 400
+            return jsonify({'error': f'不支持的模型: {model_key}'}), 400
         
         model_config = AVAILABLE_MODELS[model_key]
         
@@ -650,7 +651,7 @@ def load_model():
         
         return jsonify({
             'success': True,
-            'message': f'Model loaded successfully: {model_config["name"]} ({model_config["params"]}) on {device}',
+            'message': f'模型加载成功: {model_config["name"]} ({model_config["params"]}) on {device}',
             'model_info': {
                 'name': model_config['name'],
                 'params': model_config['params'],
@@ -660,7 +661,7 @@ def load_model():
         })
         
     except Exception as e:
-        return jsonify({'error': f'Model loading failed: {str(e)}'}), 500
+        return jsonify({'error': f'模型加载失败: {str(e)}'}), 500
 
 @app.route('/api/available-models')
 def get_available_models():
@@ -705,4 +706,4 @@ if __name__ == '__main__':
     else:
         print("Tip: Will use simulated data for demonstration")
     
-    app.run(debug=True, host='0.0.0.0', port=7070)
+    app.run(debug=True, host='0.0.0.0', port=8080)

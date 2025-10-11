@@ -33,7 +33,7 @@ fi
 
 # Start application
 echo "🌐 Starting Web server..."
-echo "Access URL: http://localhost:7070"
+echo "Access URL: http://localhost:8080"
 echo "Press Ctrl+C to stop server"
 echo ""
 

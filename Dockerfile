@@ -16,6 +16,11 @@ RUN pip3 install certifi && \
 # ENV HTTPS_PROXY=http://10.178.34.133:7890
 # ENV NO_PROXY=localhost,127.0.0.1
 
-EXPOSE 7070
+# huggingface 镜像源
+ENV HF_ENDPOINT=https://hf-mirror.com
+ENV HF_HUB_ENABLE_HF_TRANSFER=1
+ENV HF_HUB_DISABLE_PROGRESS=0
+
+EXPOSE 8080
 
 # CMD ["streamlit", "run", "main.py","--server.port 8888"]
