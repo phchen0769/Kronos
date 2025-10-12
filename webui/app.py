@@ -84,12 +84,12 @@ def load_data_file(file_path):
         elif file_path.endswith('.feather'):
             df = pd.read_feather(file_path)
         else:
-            return None, "Unsupported file format"
+            return None, "不支持的文件格式"
         
         # Check required columns
         required_cols = ['open', 'high', 'low', 'close']
         if not all(col in df.columns for col in required_cols):
-            return None, f"Missing required columns: {required_cols}"
+            return None, f"缺少需要的列: {required_cols}"
         
         # Process timestamp column
         if 'timestamps' in df.columns:
@@ -121,7 +121,7 @@ def load_data_file(file_path):
         return df, None
         
     except Exception as e:
-        return None, f"Failed to load file: {str(e)}"
+        return None, f"无法加载文件: {str(e)}"
 
 def save_prediction_results(file_path, prediction_type, prediction_results, actual_data, input_data, prediction_params):
     """Save prediction results to file"""
@@ -200,11 +200,11 @@ def save_prediction_results(file_path, prediction_type, prediction_results, actu
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(save_data, f, indent=2, ensure_ascii=False)
         
-        print(f"Prediction results saved to: {filepath}")
+        print(f"预测结果保存到: {filepath}")
         return filepath
         
     except Exception as e:
-        print(f"Failed to save prediction results: {e}")
+        print(f"无法保存预测结果: {e}")
         return None
 
 def create_prediction_chart(df, pred_df, lookback, pred_len, actual_df=None, historical_start_idx=0):
@@ -679,7 +679,7 @@ def get_model_status():
             return jsonify({
                 'available': True,
                 'loaded': True,
-                'message': 'Kronos model loaded and available',
+                'message': 'Kronos模型已经加载并可用',
                 'current_model': {
                     'name': predictor.model.__class__.__name__,
                     'device': str(next(predictor.model.parameters()).device)
@@ -689,13 +689,13 @@ def get_model_status():
             return jsonify({
                 'available': True,
                 'loaded': False,
-                'message': 'Kronos model available but not loaded'
+                'message': 'Kronos模型可用，但尚未加载'
             })
     else:
         return jsonify({
             'available': False,
             'loaded': False,
-            'message': 'Kronos model library not available, please install related dependencies'
+            'message': 'Kronos模型不可用, 请安装相关依赖'
         })
 
 if __name__ == '__main__':

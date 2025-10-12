@@ -725,7 +725,7 @@
                     showStatus('success', response.data.message);
                     updateModelStatus();
                     document.getElementById('predict-btn').disabled = false;
-                    colsole.log('✅ 模型加载成功:', response.data.model_info);
+                    console.log('✅ 模型加载成功:', response.data.model_info);
                 } else {
                     showStatus('error', response.data.error);
                 }
